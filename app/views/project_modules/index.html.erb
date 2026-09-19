@@ -3,6 +3,8 @@
 <%= pagination_links_full @project_pages, @project_count %>
 
 <%= form_tag(project_modules_path, method: :patch) do %>
+  <%= hidden_field_tag :page, params[:page] %>
+
   <div class="autoscroll">
     <table class="list permissions">
       <thead>

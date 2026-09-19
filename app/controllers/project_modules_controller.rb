@@ -23,7 +23,7 @@ class ProjectModulesController < ApplicationController
     end
 
     flash[:notice] = l(:notice_successful_update)
-    redirect_to action: :index
+    redirect_to action: :index, page: params[:page]
   rescue ActiveRecord::RecordInvalid
     flash.now[:error] = l(:error_can_not_save_project)
     render action: :index, status: :unprocessable_entity
