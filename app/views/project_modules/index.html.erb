@@ -13,7 +13,7 @@
         <tr>
           <th><%= l(:label_project) %></th>
           <% @available_modules.each do |project_module| %>
-            <% module_key = project_module.to_s.tr('_', '-').downcase %>
+            <% module_key = project_module.to_s.gsub(/[^a-z0-9]/i, '-').downcase %>
             <th>
               <%= l_or_humanize(project_module, prefix: 'project_module_') %><br>
               <%= button_tag l(:label_enable_all), type: 'button', class: 'js-project-module-column-toggle', data: { module_key: module_key, checked: '1' } %>
@@ -27,13 +27,13 @@
           <tr class="<%= cycle('odd', 'even') %>">
             <td class="name"><%= link_to_project(project) %></td>
             <% @available_modules.each do |project_module| %>
-              <% module_key = project_module.to_s.tr('_', '-').downcase %>
+              <% module_key = project_module.to_s.gsub(/[^a-z0-9]/i, '-').downcase %>
               <td class="center">
                 <%= check_box_tag(
                   "project_modules[#{project.id}][#{project_module}]",
                   '1',
                   project.module_enabled?(project_module),
-                  class: "js-project-module-column-#{module_key}"
+                  data: { module_key: module_key, project_module_checkbox: '1' }
                 ) %>
               </td>
             <% end %>
@@ -49,17 +49,22 @@
 <span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
 
 <%= javascript_tag do %>
-  if (!window.projectModuleColumnToggleBound) {
-    document.addEventListener('click', function(event) {
-      var button = event.target.closest('.js-project-module-column-toggle');
-      if (!button) { return; }
-
-      var moduleKey = button.dataset.moduleKey;
-      var checked = button.dataset.checked === '1';
-      document.querySelectorAll('.js-project-module-column-' + moduleKey).forEach(function(checkbox) {
-        checkbox.checked = checked;
-      });
-    });
-    window.projectModuleColumnToggleBound = true;
+  if (document.projectModuleColumnToggleHandler) {
+    document.removeEventListener('click', document.projectModuleColumnToggleHandler);
   }
+
+  document.projectModuleColumnToggleHandler = function(event) {
+    var button = event.target.closest('.js-project-module-column-toggle');
+    if (!button) { return; }
+
+    var moduleKey = button.dataset.moduleKey;
+    var checked = button.dataset.checked === '1';
+    document.querySelectorAll('input[data-project-module-checkbox="1"]').forEach(function(checkbox) {
+      if (checkbox.dataset.moduleKey === moduleKey) {
+        checkbox.checked = checked;
+      }
+    });
+  };
+
+  document.addEventListener('click', document.projectModuleColumnToggleHandler);
 <% end %>
