@@ -27,9 +27,8 @@ class ProjectModulesController < ApplicationController
     redirect_to action: :index, page: params[:page]
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved, ActiveRecord::StatementInvalid
     load_collections
-    @projects.each(&:reload)
     flash.now[:error] = l(:error_can_not_save_project)
-    return render action: :index, status: :unprocessable_entity
+    render action: :index, status: :unprocessable_entity
   end
 
   private
