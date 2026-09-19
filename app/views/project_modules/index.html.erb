@@ -6,7 +6,7 @@
   <% if params[:page].present? %>
     <%= hidden_field_tag :page, params[:page] %>
   <% end %>
-  <% module_columns = @available_modules.map { |project_module| [project_module, project_module.to_s.downcase.gsub(/[^a-z0-9]/, '-')] } %>
+  <% module_columns = @available_modules.map { |project_module| [project_module, project_module.to_s] } %>
 
   <div class="autoscroll">
     <table class="list permissions">
@@ -50,22 +50,20 @@
 <span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
 
 <%= javascript_tag do %>
-  if (window.projectModuleColumnToggleHandler) {
-    document.removeEventListener('click', window.projectModuleColumnToggleHandler);
-  }
+  if (!window.projectModuleColumnToggleInitialized) {
+    document.addEventListener('click', function(event) {
+      var button = event.target.closest('.js-project-module-column-toggle');
+      if (!button) { return; }
 
-  window.projectModuleColumnToggleHandler = function(event) {
-    var button = event.target.closest('.js-project-module-column-toggle');
-    if (!button) { return; }
-
-    var moduleKey = button.dataset.moduleKey;
-    var checked = button.dataset.checked === '1';
-    document.querySelectorAll('input[data-project-module-checkbox="1"]').forEach(function(checkbox) {
-      if (checkbox.dataset.moduleKey === moduleKey) {
-        checkbox.checked = checked;
-      }
+      var moduleKey = button.dataset.moduleKey;
+      var checked = button.dataset.checked === '1';
+      document.querySelectorAll('input[data-project-module-checkbox="1"]').forEach(function(checkbox) {
+        if (checkbox.dataset.moduleKey === moduleKey) {
+          checkbox.checked = checked;
+        }
+      });
     });
-  };
 
-  document.addEventListener('click', window.projectModuleColumnToggleHandler);
+    window.projectModuleColumnToggleInitialized = true;
+  }
 <% end %>
