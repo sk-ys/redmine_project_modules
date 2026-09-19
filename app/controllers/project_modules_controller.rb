@@ -14,23 +14,22 @@ class ProjectModulesController < ApplicationController
 
     module_matrix = params.fetch(:project_modules, {})
 
-    begin
-      Project.transaction do
-        @projects.each do |project|
-          selected_modules = filtered_modules_for(project.id, module_matrix, @available_module_names)
-          preserved_modules = project.enabled_module_names - @available_module_names
-          project.enabled_module_names = selected_modules | preserved_modules
-          project.save!
-        end
+    Project.transaction do
+      @projects.each do |project|
+        selected_modules = filtered_modules_for(project.id, module_matrix, @available_module_names)
+        preserved_modules = project.enabled_module_names - @available_module_names
+        project.enabled_module_names = selected_modules | preserved_modules
+        project.save!
       end
-    rescue ActiveRecord::ActiveRecordError
-      load_collections
-      flash.now[:error] = l(:error_can_not_save_project)
-      return render action: :index, status: :unprocessable_entity
     end
 
     flash[:notice] = l(:notice_successful_update_project_modules_page)
     redirect_to action: :index, page: params[:page]
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved, ActiveRecord::StatementInvalid
+    load_collections
+    @projects.each(&:reload)
+    flash.now[:error] = l(:error_can_not_save_project)
+    return render action: :index, status: :unprocessable_entity
   end
 
   private
