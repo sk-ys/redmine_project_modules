@@ -1,5 +1,34 @@
 <%= title l(:label_administration), l(:label_project_modules) %>
 
+<% content_for :header_tags do %>
+  <style>
+    .project-modules-matrix thead th {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #fff;
+    }
+
+    .project-modules-matrix .project-modules-sticky-column {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+    }
+
+    .project-modules-matrix thead .project-modules-sticky-column {
+      z-index: 30;
+    }
+
+    .project-modules-matrix tbody tr.odd .project-modules-sticky-column {
+      background: #f6f7f8;
+    }
+
+    .project-modules-matrix tbody tr.even .project-modules-sticky-column {
+      background: #fff;
+    }
+  </style>
+<% end %>
+
 <span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
 
 <%= form_tag(project_modules_path, method: :patch) do %>
@@ -9,10 +38,10 @@
   <% module_columns = @available_modules.map { |project_module| [project_module, project_module.to_s] } %>
 
   <div class="autoscroll">
-    <table class="list permissions">
+    <table class="list permissions project-modules-matrix">
       <thead>
         <tr>
-          <th><%= l(:label_project) %></th>
+          <th class="project-modules-sticky-column"><%= l(:label_project) %></th>
           <% module_columns.each do |project_module, module_key| %>
             <th>
               <div><%= l_or_humanize(project_module, prefix: 'project_module_') %></div>
@@ -27,7 +56,7 @@
       <tbody>
         <% @projects.each do |project| %>
           <tr class="<%= cycle('odd', 'even') %>">
-            <td class="name"><%= link_to_project(project) %></td>
+            <td class="name project-modules-sticky-column"><%= link_to_project(project) %></td>
             <% module_columns.each do |project_module, module_key| %>
               <td class="center">
                 <%= check_box_tag(
