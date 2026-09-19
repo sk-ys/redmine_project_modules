@@ -16,8 +16,9 @@ class ProjectModulesController < ApplicationController
 
     Project.transaction do
       @projects.each do |project|
-        selected_modules = filtered_modules_for(project.id, module_matrix)
-        project.enabled_module_names = selected_modules
+        selected_modules = filtered_modules_for(project.id, module_matrix, @available_module_names)
+        preserved_modules = project.enabled_module_names - @available_module_names
+        project.enabled_module_names = selected_modules | preserved_modules
         project.save!
       end
     end
@@ -47,7 +48,7 @@ class ProjectModulesController < ApplicationController
     @available_module_names = @available_modules.map(&:to_s)
   end
 
-  def filtered_modules_for(project_id, module_matrix)
-    module_matrix.fetch(project_id.to_s, {}).keys & @available_module_names
+  def filtered_modules_for(project_id, module_matrix, available_module_names)
+    module_matrix.fetch(project_id.to_s, {}).keys & available_module_names
   end
 end
