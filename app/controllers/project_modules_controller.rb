@@ -3,6 +3,7 @@
 class ProjectModulesController < ApplicationController
   layout 'admin'
   before_action :require_admin
+  protect_from_forgery with: :exception
 
   def index
     load_collections
@@ -15,7 +16,7 @@ class ProjectModulesController < ApplicationController
 
     Project.transaction do
       @projects.each do |project|
-        selected_modules = module_matrix.fetch(project.id.to_s, {}).keys
+        selected_modules = filtered_modules_for(project.id, module_matrix)
         project.enabled_module_names = selected_modules
         project.save!
       end
@@ -31,7 +32,17 @@ class ProjectModulesController < ApplicationController
   private
 
   def load_collections
-    @projects = Project.active.order(:lft).to_a
+    scope = Project.active.order(:lft)
+    @project_count = scope.count
+    @limit = per_page_option
+    @project_pages = Redmine::Pagination::Paginator.new(@project_count, @limit, params[:page])
+    @offset = @project_pages.offset
+    @projects = scope.offset(@offset).limit(@limit).to_a
     @available_modules = Redmine::AccessControl.available_project_modules.sort_by(&:to_s)
+    @available_module_names = @available_modules.map(&:to_s)
+  end
+
+  def filtered_modules_for(project_id, module_matrix)
+    module_matrix.fetch(project_id.to_s, {}).keys & @available_module_names
   end
 end

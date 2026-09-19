@@ -1,6 +1,8 @@
 <%= title [l(:label_administration), l(:label_project_modules)] %>
 
-<%= form_tag(project_modules_path) do %>
+<%= pagination_links_full @project_pages, @project_count %>
+
+<%= form_tag(project_modules_path, method: :patch) do %>
   <div class="autoscroll">
     <table class="list permissions">
       <thead>
@@ -32,3 +34,5 @@
 
   <p><%= submit_tag l(:button_save) %></p>
 <% end %>
+
+<%= pagination_links_full @project_pages, @project_count %>
