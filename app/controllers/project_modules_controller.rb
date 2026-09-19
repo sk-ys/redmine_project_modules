@@ -26,7 +26,6 @@ class ProjectModulesController < ApplicationController
     flash[:notice] = l(:notice_successful_update_project_modules_page)
     redirect_to action: :index, page: params[:page]
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved, ActiveRecord::StatementInvalid
-    load_collections
     flash.now[:error] = l(:error_can_not_save_project)
     render action: :index, status: :unprocessable_entity
   end
