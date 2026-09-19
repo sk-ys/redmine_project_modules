@@ -27,6 +27,9 @@ class ProjectModulesController < ApplicationController
   rescue ActiveRecord::RecordInvalid
     flash.now[:error] = l(:error_can_not_save_project)
     render action: :index, status: :unprocessable_entity
+  rescue ActiveRecord::ActiveRecordError
+    flash.now[:error] = l(:error_can_not_save_project)
+    render action: :index, status: :unprocessable_entity
   end
 
   private
@@ -38,7 +41,12 @@ class ProjectModulesController < ApplicationController
     @project_pages = Redmine::Pagination::Paginator.new(@project_count, @limit, params[:page])
     @offset = @project_pages.offset
     @projects = scope.offset(@offset).limit(@limit).to_a
-    @available_modules = Redmine::AccessControl.available_project_modules.sort_by(&:to_s)
+    available_modules = if Redmine::AccessControl.respond_to?(:available_project_modules)
+                          Redmine::AccessControl.available_project_modules
+                        else
+                          Redmine::AccessControl.permissions.map(&:project_module).compact.uniq
+                        end
+    @available_modules = available_modules.sort_by(&:to_s)
     @available_module_names = @available_modules.map(&:to_s)
   end
 
