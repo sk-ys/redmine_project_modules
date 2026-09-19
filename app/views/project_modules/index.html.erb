@@ -12,8 +12,12 @@
       <thead>
         <tr>
           <th><%= l(:label_project) %></th>
-          <% @available_modules.each do |project_module| %>
-            <th><%= l_or_humanize(project_module, prefix: 'project_module_') %></th>
+          <% @available_modules.each_with_index do |project_module, index| %>
+            <th>
+              <%= l_or_humanize(project_module, prefix: 'project_module_') %><br>
+              <%= button_tag l(:label_enable_all), type: 'button', class: 'js-project-module-column-toggle', data: { column_index: index, checked: '1' } %>
+              <%= button_tag l(:label_disable_all), type: 'button', class: 'js-project-module-column-toggle', data: { column_index: index, checked: '0' } %>
+            </th>
           <% end %>
         </tr>
       </thead>
@@ -21,12 +25,13 @@
         <% @projects.each do |project| %>
           <tr class="<%= cycle('odd', 'even') %>">
             <td class="name"><%= link_to_project(project) %></td>
-            <% @available_modules.each do |project_module| %>
+            <% @available_modules.each_with_index do |project_module, index| %>
               <td class="center">
                 <%= check_box_tag(
                   "project_modules[#{project.id}][#{project_module}]",
                   '1',
-                  project.module_enabled?(project_module)
+                  project.module_enabled?(project_module),
+                  class: "js-project-module-column-#{index}"
                 ) %>
               </td>
             <% end %>
@@ -40,3 +45,16 @@
 <% end %>
 
 <span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
+
+<%= javascript_tag do %>
+  document.addEventListener('click', function(event) {
+    var button = event.target.closest('.js-project-module-column-toggle');
+    if (!button) { return; }
+
+    var columnIndex = button.dataset.columnIndex;
+    var checked = button.dataset.checked === '1';
+    document.querySelectorAll('.js-project-module-column-' + columnIndex).forEach(function(checkbox) {
+      checkbox.checked = checked;
+    });
+  });
+<% end %>
