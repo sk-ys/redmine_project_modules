@@ -1,0 +1,17 @@
+.project-modules-matrix thead th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: inherit;
+}
+
+.project-modules-matrix .project-modules-sticky-column {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: inherit;
+}
+
+.project-modules-matrix thead .project-modules-sticky-column {
+  z-index: 30;
+}
