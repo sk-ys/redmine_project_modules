@@ -9,7 +9,7 @@
   position: sticky;
   left: 0;
   z-index: 10;
-  background: inherit;
+  background: var(--project-modules-cell-bg, #fff);
 }
 
 .project-modules-matrix thead .project-modules-sticky-column {
