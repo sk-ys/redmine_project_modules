@@ -15,9 +15,11 @@
           <th><%= l(:label_project) %></th>
           <% module_columns.each do |project_module, module_key| %>
             <th>
-              <%= l_or_humanize(project_module, prefix: 'project_module_') %><br>
-              <%= button_tag l(:label_enable_all), type: 'button', class: 'js-project-module-column-toggle', data: { module_key: module_key, checked: '1' } %>
-              <%= button_tag l(:label_disable_all), type: 'button', class: 'js-project-module-column-toggle', data: { module_key: module_key, checked: '0' } %>
+              <div><%= l_or_humanize(project_module, prefix: 'project_module_') %></div>
+              <div>
+                <%= button_tag l(:label_enable_all), type: 'button', class: 'js-project-module-column-toggle', data: { module_key: module_key, checked: '1' } %>
+                <%= button_tag l(:label_disable_all), type: 'button', class: 'js-project-module-column-toggle', data: { module_key: module_key, checked: '0' } %>
+              </div>
             </th>
           <% end %>
         </tr>
@@ -48,7 +50,7 @@
 <span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
 
 <%= javascript_tag do %>
-  if (document.body.dataset.projectModuleColumnToggleBound !== '1') {
+  if (!window.projectModuleColumnToggleBound) {
     document.addEventListener('click', function(event) {
       var button = event.target.closest('.js-project-module-column-toggle');
       if (!button) { return; }
@@ -62,6 +64,6 @@
       });
     });
 
-    document.body.dataset.projectModuleColumnToggleBound = '1';
+    window.projectModuleColumnToggleBound = true;
   }
 <% end %>
