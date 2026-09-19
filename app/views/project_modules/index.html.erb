@@ -1,6 +1,6 @@
 <%= title l(:label_administration), l(:label_project_modules) %>
 
-<%= pagination_links_full @project_pages, @project_count %>
+<span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
 
 <%= form_tag(project_modules_path, method: :patch) do %>
   <% if params[:page].present? %>
@@ -39,4 +39,4 @@
   <p><%= submit_tag l(:button_save) %></p>
 <% end %>
 
-<%= pagination_links_full @project_pages, @project_count %>
+<span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
