@@ -1,0 +1,49 @@
+<%= title l(:label_administration), l(:label_project_modules) %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'project_modules', plugin: 'redmine_project_modules' %>
+<% end %>
+
+<%= form_tag(project_modules_path, method: :patch) do %>
+  <% if params[:page].present? %>
+    <%= hidden_field_tag :page, params[:page] %>
+  <% end %>
+  <% module_columns = @available_modules.map { |project_module| [project_module, project_module.to_s] } %>
+
+  <div class="autoscroll">
+    <table class="list project-modules">
+      <thead>
+        <tr>
+          <th><%= l(:label_project) %></th>
+          <% module_columns.each do |project_module, module_key| %>
+            <th>
+              <div><%= l_or_humanize(project_module, prefix: 'project_module_') %></div>
+              <%= toggle_checkboxes_link("input[data-module-key=\"#{module_key}\"]") %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% @projects.each do |project| %>
+          <tr class="<%= cycle('odd', 'even') %>">
+            <td class="name"><%= link_to_project(project) %></td>
+            <% module_columns.each do |project_module, module_key| %>
+              <td class="center">
+                <%= check_box_tag(
+                  "project_modules[#{project.id}][#{project_module}]",
+                  '1',
+                  project.module_enabled?(project_module),
+                  data: { module_key: module_key, project_module_checkbox: '1' }
+                ) %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <p><%= submit_tag l(:button_save) %></p>
+<% end %>
+
+<span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
