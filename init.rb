@@ -12,5 +12,6 @@ Redmine::Plugin.register :redmine_project_modules do
        :project_modules,
        { controller: 'project_modules', action: 'index' },
        caption: :label_project_modules,
-       html: { class: 'icon icon-projects' }
+       html: { class: 'icon icon-projects' },
+       icon: 'projects'
 end
