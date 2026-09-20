@@ -1,4 +1,4 @@
-# redmine_project_modules
+# Redmine project modules
 
 Redmine plugin that adds an administration page for managing enabled project modules in a permissions-style matrix.
 
