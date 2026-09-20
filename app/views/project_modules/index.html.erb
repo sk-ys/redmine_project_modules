@@ -13,10 +13,10 @@
   <% module_columns = @available_modules.map { |project_module| [project_module, project_module.to_s] } %>
 
   <div class="autoscroll">
-    <table class="list permissions project-modules-matrix">
+    <table class="list project-modules">
       <thead>
         <tr>
-          <th class="project-modules-sticky-column"><%= l(:label_project) %></th>
+          <th><%= l(:label_project) %></th>
           <% module_columns.each do |project_module, module_key| %>
             <th>
               <div><%= l_or_humanize(project_module, prefix: 'project_module_') %></div>
@@ -31,7 +31,7 @@
       <tbody>
         <% @projects.each do |project| %>
           <tr class="<%= cycle('odd', 'even') %>">
-            <td class="name project-modules-sticky-column"><%= link_to_project(project) %></td>
+            <td class="name"><%= link_to_project(project) %></td>
             <% module_columns.each do |project_module, module_key| %>
               <td class="center">
                 <%= check_box_tag(
