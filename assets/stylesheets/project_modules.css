@@ -15,6 +15,9 @@ table.list.project-modules {
   top: var(--project-modules-sticky-top, 0);
   z-index: 1;
   background: var(--project-modules-bg, #eee);
+  word-break: keep-all;
+  white-space: normal;
+  vertical-align: bottom;
 }
 
 .project-modules :is(th:first-child, td:first-child) {
