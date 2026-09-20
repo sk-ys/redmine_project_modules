@@ -4,8 +4,6 @@
   <%= stylesheet_link_tag 'project_modules', plugin: 'redmine_project_modules' %>
 <% end %>
 
-<span class="pagination"><%= pagination_links_full @project_pages, @project_count %></span>
-
 <%= form_tag(project_modules_path, method: :patch) do %>
   <% if params[:page].present? %>
     <%= hidden_field_tag :page, params[:page] %>
