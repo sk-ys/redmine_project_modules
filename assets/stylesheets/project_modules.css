@@ -14,7 +14,7 @@ table.list.project-modules {
   position: sticky;
   top: var(--project-modules-sticky-top, 0);
   z-index: 1;
-  background: var(--project-modules-bg, #eee);
+  background: var(--oc-gray-2, #eee);
   word-break: keep-all;
   white-space: normal;
   vertical-align: bottom;
@@ -24,7 +24,7 @@ table.list.project-modules {
   position: sticky;
   left: 0;
   z-index: 1;
-  background: var(--project-modules-bg, #eee);
+  background: var(--oc-gray-2, #eee);
   min-width: 10rem;
 }
 
