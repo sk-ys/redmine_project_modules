@@ -2,6 +2,8 @@
 
 Redmine plugin that adds an administration page for managing enabled project modules in a permissions-style matrix.
 
+![Redmine Project Modules](docs/images/screenshot.png)
+
 ## Installation
 
 1. Copy this plugin to your Redmine `plugins/` directory.
