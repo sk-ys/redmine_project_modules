@@ -44,7 +44,7 @@ class ProjectModulesController < ApplicationController
                         else
                           Redmine::AccessControl.permissions.map(&:project_module).compact.uniq
                         end
-    @available_modules = available_modules.sort_by(&:to_s)
+    @available_modules = available_modules
     @available_module_names = @available_modules.map(&:to_s)
   end
 
